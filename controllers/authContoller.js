@@ -82,3 +82,25 @@ exports.login = async (req, res, next) => {
     next(new Error(err.message));
   }
 };
+
+exports.googleLogin = async (req, res, next) => {
+  try {
+    console.log(req.body);
+    console.log(req.params);
+    const command = new InitiateAuthCommand({
+      ClientId: process.env.ClientId,
+      AuthFlow: AuthFlowType.USER_SRP_AUTH,
+      AuthParameters: {
+        AUTH_TYPE: "google",
+      },
+    });
+
+    const result = await cognitoISP.send(command);
+    if (!result) {
+      return next(new Error(err.message));
+    }
+    res.status(200).json(result);
+  } catch (err) {
+    next(new Error(err.message));
+  }
+};
