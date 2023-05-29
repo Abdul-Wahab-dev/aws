@@ -4,10 +4,12 @@ const { createHmac } = require("crypto");
 exports.secretHash = (username) => {
   const clientSecret = process.env.ClientSecret;
   const clientId = process.env.ClientId;
+  console.log(clientId);
+  console.log(clientSecret);
   const hasher = createHmac("sha256", clientSecret);
-
+  const message = username + clientId;
   // add the value we want to hash
-  hasher.update(username + clientId);
+  hasher.update(message);
 
   // get the hashed value as base64
   let output = hasher.digest("base64");
