@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-cognito-identity": "^3.341.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.341.0",
     "@aws-sdk/client-s3": "^3.341.0",
+    "@aws-sdk/credential-providers": "^3.341.0",
     "@aws-sdk/s3-request-presigner": "^3.341.0",
     "aws-sdk": "^2.1386.0",
     "concurrently": "^8.0.1",
