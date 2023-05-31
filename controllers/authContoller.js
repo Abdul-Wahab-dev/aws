@@ -8,7 +8,11 @@ const {
 } = require("@aws-sdk/client-cognito-identity-provider");
 const { fromCognitoIdentityPool } = require("@aws-sdk/credential-providers");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const { cognitoISP, identityClient } = require("../helper/aws-client");
+const {
+  cognitoISP,
+  cognitoIP,
+  identityClient,
+} = require("../helper/aws-client");
 exports.get = async (req, res, next) => {
   try {
     res.send("Hello world");
@@ -108,23 +112,34 @@ exports.login = async (req, res, next) => {
 };
 
 exports.googleLogin = async (req, res, next) => {
+  const { token } = req.params;
   try {
-    console.log(req.body);
-    console.log(req.params);
+    const srpA = generateRandomHexString(); // Generate a random hexadecimal string
     const command = new InitiateAuthCommand({
       ClientId: process.env.ClientId,
-      AuthFlow: AuthFlowType.USER_SRP_AUTH,
+      // AuthFlow: AuthFlowType.USER_SRP_AUTH,
       AuthParameters: {
-        AUTH_TYPE: "google",
+        login: {
+          ["accounts.google.com"]: token,
+        },
       },
     });
 
     const result = await cognitoISP.send(command);
-    if (!result) {
-      return next(new Error(err.message));
-    }
+    console.log(result);
+
     res.status(200).json(result);
   } catch (err) {
     next(new Error(err.message));
   }
 };
+
+// Helper function to generate a random hexadecimal string
+function generateRandomHexString(length = 32) {
+  const characters = "0123456789abcdef";
+  let hexString = "";
+  for (let i = 0; i < length; i++) {
+    hexString += characters[Math.floor(Math.random() * characters.length)];
+  }
+  return hexString;
+}
